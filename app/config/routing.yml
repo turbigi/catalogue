@@ -1,0 +1,6 @@
+anton_shop:
+    resource: "@AntonShopBundle/Resources/config/routing.yml"
+    prefix:   /
+logout:
+    path: /logout
+

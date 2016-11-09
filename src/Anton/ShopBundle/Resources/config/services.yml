@@ -1,0 +1,4 @@
+services:
+#    anton_shop.example:
+#        class: Anton\ShopBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
