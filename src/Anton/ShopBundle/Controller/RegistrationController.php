@@ -2,39 +2,40 @@
 
 namespace Anton\ShopBundle\Controller;
 
-use Anton\ShopBundle\Form\UserType;
-use Anton\ShopBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Anton\ShopBundle\Form\UserType;
+use Anton\ShopBundle\Entity\User;
+use Anton\ShopBundle\Entity\Role;
 
 class RegistrationController extends Controller
 {
     /**
      * @Route("/signup", name="AntonShopBundle_signup")
      */
+
     public function registerAction(Request $request)
     {
-        // 1) build the form
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
+        $role = new Role();
 
-        // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $user->setSalt(md5(time()));
 
-            // 3) Encode the password (you could also do this via Doctrine listener)
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
-            // 4) save the User!
+            $role->setName('ROLE_USER');
+
             $em = $this->getDoctrine()->getManager();
+            $em->persist($role);
+            $user->getUserRoles()->add($role);
             $em->persist($user);
             $em->flush();
-
-            // ... do any other work - like sending them an email, etc
-            // maybe set a "flash" success message for the user
 
             return $this->redirectToRoute('AntonShopBundle_homepage');
         }

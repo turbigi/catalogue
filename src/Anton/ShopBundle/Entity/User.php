@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class User implements UserInterface, \Serializable
 {
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -29,7 +30,14 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank()
      */
+
     private $username;
+
+    /**
+     * @ORM\Column(type="string", unique=true)
+     */
+    private $apiToken;
+
 
     /**
      * @ORM\Column(type="string", length=64)
@@ -71,6 +79,7 @@ class User implements UserInterface, \Serializable
      */
 
     private $roles;
+
     public function __construct()
     {
         $this->isActive = true;

@@ -90,6 +90,7 @@ class Role implements RoleInterface
     {
         return $this->getName();
     }
+
     public function equals(UserInterface $user)
     {
         return md5($this->getUsername()) == md5($user->getUsername());

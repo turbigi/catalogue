@@ -12,14 +12,14 @@ class FixtureLoader implements FixtureInterface
     {
         // создание роли ROLE_ADMIN
         $role = new Role();
-        $role->setName('ROLE_ADMIN');
+        $role->setName('ROLE_MODERATOR');
 
         $manager->persist($role);
 
         // создание пользователя
         $user = new User();
-        $user->setUsername('turbigi');
-        $user->setEmail('john@example.com');
+        $user->setUsername('turbigi5');
+        $user->setEmail('john2@exa5mple.com');
         $user->setSalt(md5(time()));
 
         // шифрует и устанавливает пароль для пользователя,

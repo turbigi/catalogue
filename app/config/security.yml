@@ -6,7 +6,9 @@ security:
             algorithm: md5
             encode-as-base64: true
             iterations: 10
-
+    role_hierarchy:
+            ROLE_MODERATOR:    ROLE_USER
+            ROLE_ADMIN:       [ROLE_MODERATOR, ROLE_USER, ROLE_ALLOWED_TO_SWITCH]
     providers:
             our_db_provider:
                 entity:
@@ -15,11 +17,17 @@ security:
 
     firewalls:
         main:
-                            pattern:    ^/login
-                            http_basic: ~
-                            provider: our_db_provider
-                            logout: true
-                            security: true
+            anonymous: ~
+            guard:
+                authenticators:
+                    - app.api_token_authenticator
+            form_login:
+                login_path: security_login
+                check_path: security_login
+            logout:
+                path:   /logout
+                target: /
+
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -32,3 +40,4 @@ security:
 
             # form_login: ~
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+    access_control:
