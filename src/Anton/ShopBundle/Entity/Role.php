@@ -1,9 +1,7 @@
 <?php
 namespace Anton\ShopBundle\Entity;
-
 use Symfony\Component\Security\Core\Role\RoleInterface;
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  * @ORM\Entity
  * @ORM\Table(name="role")
@@ -18,21 +16,18 @@ class Role implements RoleInterface
      * @var integer $id
      */
     protected $id;
-
     /**
      * @ORM\Column(type="string", length=255)
      *
      * @var string $name
      */
     protected $name;
-
     /**
      * @ORM\Column(type="datetime", name="created_at")
      *
      * @var DateTime $createdAt
      */
     protected $createdAt;
-
     /**
      * Геттер для id.
      *
@@ -42,7 +37,6 @@ class Role implements RoleInterface
     {
         return $this->id;
     }
-
     /**
      * Геттер для названия роли.
      *
@@ -52,7 +46,6 @@ class Role implements RoleInterface
     {
         return $this->name;
     }
-
     /**
      * Сеттер для названия роли.
      *
@@ -62,7 +55,6 @@ class Role implements RoleInterface
     {
         $this->name = $value;
     }
-
     /**
      * Геттер для даты создания роли.
      *
@@ -72,7 +64,6 @@ class Role implements RoleInterface
     {
         return $this->createdAt;
     }
-
     /**
      * Конструктор класса
      */
@@ -80,7 +71,6 @@ class Role implements RoleInterface
     {
         $this->createdAt = new \DateTime();
     }
-
     /**
      * Реализация метода, требуемого интерфейсом RoleInterface.
      *

@@ -7,18 +7,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-
+use Symfony\Component\Security\Core\User\EquatableInterface;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
- * @ORM\Entity(repositoryClass="Anton\ShopBundle\Entity\UserRepository")
- * @UniqueEntity(fields="email", message="Email already taken")
- * @UniqueEntity(fields="username", message="Username already taken")
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, EquatableInterface, \Serializable
 {
-
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -34,11 +30,16 @@ class User implements UserInterface, \Serializable
     private $username;
 
     /**
-     * @ORM\Column(type="string", unique=true)
+     * Тут мы будем хранить наш токен. Токен необходимо генерировать самому и как можно сложнее и длиннее, чтобы исключить возможность подбора
+     *
+     * @ORM\Column(name="access_token", type="string")
      */
-    private $apiToken;
+    private $accessToken;
 
-
+    /**
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     */
+    private $createdAt;
     /**
      * @ORM\Column(type="string", length=64)
      */
@@ -57,35 +58,19 @@ class User implements UserInterface, \Serializable
      */
     private $email;
     /**
-     * @ORM\Column(type="string", length=255)
-     *
-     * @var string salt
-     */
-    protected $salt;
-    /**
      * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Role")
-     * @ORM\JoinTable(name="user_role",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id_user")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="role_id", referencedColumnName="id")}
-     *      )
-     *
-     * @var ArrayCollection $roles
-     *
+     * @ORM\Column(type="string", length=50)
      */
-
-    private $roles;
+    private $role;
 
     public function __construct()
     {
         $this->isActive = true;
         $this->roles = new ArrayCollection();
-        // may not be needed, see section on salt below
-        // $this->salt = md5(uniqid(null, true));
     }
 
     public function getUsername()
@@ -102,34 +87,51 @@ class User implements UserInterface, \Serializable
     {
         $this->plainPassword = $password;
     }
-
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
     public function getSalt()
     {
-        // you *may* need a real salt depending on your encoder
-        // see section on salt below
-        return $this->salt;
-    }
-
-    public function setSalt($value)
-    {
-        $this->salt = $value;
+        return null;
     }
 
     public function getPassword()
     {
         return $this->password;
     }
-    public function getUserRoles()
+
+
+    public function getRole()
     {
-        return $this->roles;
+        return $this->role;
     }
+
+    public function setRole($role = null)
+    {
+        $this->role = $role;
+    }
+
     public function getRoles()
     {
-        return $this->getUserRoles()->toArray();
+        return [$this->getRole()];
     }
 
     public function eraseCredentials()
     {
+        return null;
     }
 
     /** @see \Serializable::serialize() */
@@ -240,6 +242,23 @@ class User implements UserInterface, \Serializable
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    public function isEqualTo(UserInterface $user)
+    {
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        if ($this->password !== $user->getPassword()) {
+            return false;
+        }
+
+        if ($this->username !== $user->getUsername()) {
+            return false;
+        }
+
+        return true;
     }
 
 }

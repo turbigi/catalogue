@@ -1,11 +1,23 @@
-{# src/Blogger/BlogBundle/Resources/views/layout.html.twig #}
 {% extends '::base.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link href="{{ asset('bundles/antonshop/css/blog.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/antonshop/css/blog.css') }}" type="text/css" rel="stylesheet"/>
 {% endblock %}
 
-{% block sidebar %}
-    Sidebar content
+{% block sidebarText %}
+    lol
 {% endblock %}
+
+ {% block navigation %}
+     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+         {% set menuItem = knp_menu_get('AntonShopBundle:Builder:mainMenu',[], {'username': ( app.user.username) }) %}
+         {{ knp_menu_render(menuItem) }}
+     {% else %}
+         <ul class="nav nav-pills">
+             <li class="pull-right"><a href="{{ path('security_login') }}">Login</a></li>
+             <li class="pull-right"><a href="{{ path('AntonShopBundle_signup') }}">Sign up</a></li>
+         </ul>
+     {% endif %}
+
+ {% endblock %}

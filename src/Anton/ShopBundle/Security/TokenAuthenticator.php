@@ -1,66 +1,61 @@
 <?php
+
 namespace Anton\ShopBundle\Security;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
-class TokenAuthenticator extends AbstractGuardAuthenticator
+class TokenAuthenticator implements SimplePreAuthenticatorInterface
 {
-    private $em;
+    protected $userProvider;
 
-    public function __construct(EntityManager $em)
+    public function __construct(ApiKeyUserProvider $userProvider)
     {
-        $this->em = $em;
+        $this->userProvider = $userProvider;
     }
 
-    public function getCredentials(Request $request)
+    public function createToken(Request $request, $providerKey)
     {
-        return $request->headers->get('X-TOKEN');
-    }
-    public function getUser($credentials, UserProviderInterface $userProvider)
-    {
-        $user = $this->em->getRepository('ShopBundle:User')
-            ->findOneBy(array('apiToken' => $credentials));
-        // we could just return null, but this allows us to control the message a bit more
-        if (!$user) {
-            throw new AuthenticationCredentialsNotFoundException();
+        if (!$request->query->has('apikey')) {
+            throw new BadCredentialsException('No API key found');
         }
-        return $user;
-    }
-    public function checkCredentials($credentials, UserInterface $user)
-    {
-        return;
-    }
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
-    {
-        return new JsonResponse(
-        // you could translate the message
-            array('message' => $exception->getMessageKey()),
-            403
+
+        return new PreAuthenticatedToken(
+            'anon.',
+            $request->query->get('apikey'),
+            $providerKey
         );
     }
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+
+    public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
-        return;
-    }
-    public function supportsRememberMe()
-    {
-        return false;
-    }
-    public function start(Request $request, AuthenticationException $authException = null)
-    {
-        return new JsonResponse(
-        // you could translate the message
-            array('message' => 'Authentication required'),
-            401
+        $apiKey = $token->getCredentials();
+        $username = $this->userProvider->getUsernameForApiKey($apiKey);
+
+        if (!$username) {
+            throw new AuthenticationException(
+                sprintf('API Key "%s" does not exist.', $apiKey)
+            );
+        }
+
+        $user = $this->userProvider->loadUserByUsername($username);
+
+        return new PreAuthenticatedToken(
+            $user,
+            $apiKey,
+            $providerKey,
+            $user->getRoles()
         );
+    }
+
+    public function supportsToken(TokenInterface $token, $providerKey)
+    {
+        return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey;
     }
 }

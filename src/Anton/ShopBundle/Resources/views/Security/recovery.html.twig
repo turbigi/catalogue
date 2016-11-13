@@ -1,0 +1,16 @@
+{% extends 'AntonShopBundle::layout.html.twig' %}
+
+{% block title %}Recovery password{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>Recovery password</h1>
+    </header>
+    <form action="{{ path('recovery_password') }}" method="post">
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="_email"/>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+{% endblock %}

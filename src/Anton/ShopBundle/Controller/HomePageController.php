@@ -4,17 +4,17 @@ namespace Anton\ShopBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Anton\ShopBundle\Form\EnquiryType;
-use Anton\ShopBundle\Entity\Enquiry;
+use Symfony\Component\HttpFoundation\Request;
 
-class PageController extends Controller
+class HomePageController extends Controller
 {
     /**
      * @Route("/", name="AntonShopBundle_homepage")
      */
 
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         return $this->render('AntonShopBundle:Page:index.html.twig');
     }
+
 }

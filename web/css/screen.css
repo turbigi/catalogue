@@ -10,13 +10,14 @@ body { line-height: 1;font-family: Arial, Helvetica, sans-serif;font-size: 12px;
 #header { border-bottom: 1px solid #ccc; margin-bottom: 20px; }
 #header .top { border-bottom: 1px solid #ccc; margin-bottom: 10px; }
 #header ul.navigation { list-style: none; text-align: right; }
-#header .navigation li { display: inline }
-#header .navigation li a { display: inline-block; padding: 10px 15px; border-left: 1px solid #ccc; }
+
+#header .nav li a { border-left: 1px solid #ccc; }
+#header .nav li ul li a { border-left: 0px solid #ccc; }
 #header h2 { font-family: 'Irish Grover', cursive; font-size: 92px; text-align: center; line-height: 110px; }
 #header h2 a { color: #000; }
 #header h3 { text-align: center; font-family: 'La Belle Aurore', cursive; font-size: 24px; margin-bottom: 20px; font-weight: normal; }
 
-.main-col { width: 700px; display: inline-block; float: right; border-left: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
+.main-col {  width:70%;display: inline-block; float: right; border-left: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
 .sidebar { width: 239px; padding: 10px; display: inline-block; }
 
 .main-col a { color: #F48A00; }

@@ -4,34 +4,33 @@ security:
     encoders:
         Anton\ShopBundle\Entity\User:
             algorithm: md5
-            encode-as-base64: true
-            iterations: 10
+            encode_as_base64: true
+            iterations: 0
     role_hierarchy:
             ROLE_MODERATOR:    ROLE_USER
             ROLE_ADMIN:       [ROLE_MODERATOR, ROLE_USER, ROLE_ALLOWED_TO_SWITCH]
     providers:
-            our_db_provider:
-                entity:
-                    class: AntonShopBundle:User
-                    property: username
+            database_users:
+                id: app.user_provider
 
     firewalls:
+        dev:
+                    pattern: ^/(_(profiler|wdt)|css|images|js)/
+                    security: false
+
         main:
-            anonymous: ~
+            anonymous:
+            provider: database_users
             guard:
                 authenticators:
-                    - app.api_token_authenticator
-            form_login:
-                login_path: security_login
-                check_path: security_login
+                    - app.form_login_authenticator
             logout:
                 path:   /logout
                 target: /
-
+    access_control:
+             - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # disables authentication for assets and the profiler, adapt it according to your needs
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+
 
             # activate different ways to authenticate
 
@@ -40,4 +39,3 @@ security:
 
             # form_login: ~
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
-    access_control:

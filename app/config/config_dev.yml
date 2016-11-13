@@ -31,4 +31,6 @@ monolog:
         #    level:  info
 
 swiftmailer:
-    delivery_address: zerg7003@list.ru
+    transport: gmail
+    username:  '%mailer_user%'
+    password:  '%mailer_password%'

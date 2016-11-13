@@ -4,9 +4,18 @@ parameters:
 #    parameter_name: value
 
 services:
-    app.api_token_authenticator:
-            class: Anton\ShopBundle\Security\TokenAuthenticator
+      app.user_provider:
+            class: Anton\ShopBundle\Entity\UserProvider
             arguments: ["@doctrine.orm.entity_manager"]
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+      app.form_login_authenticator:
+            class: Anton\ShopBundle\Security\FormLoginAuthenticator
+            autowire: true
+            arguments: ["@router","@security.password_encoder"]
+      app.last_login:
+              class: Anton\ShopBundle\EventListener\LastLoginTime
+              arguments: ["@doctrine.orm.entity_manager"]
+              tags:
+                  - { name: kernel.event_subscriber }
+      #service_name:
+       # class: AppBundle\Directory\ClassName
+       # arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
