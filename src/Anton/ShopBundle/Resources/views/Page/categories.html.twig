@@ -1,0 +1,66 @@
+{% macro menu_links(links) %}
+    {% import _self as macros %}
+    {% for link in links %}
+        {% if link.children|length >= 1 %}
+            <li class="Collapsable ooo">
+            <a class="editCategory" href="{{ path('editCategories',{'name':link.name}) }}">
+                <img src="{{ asset('img/edit.jpg') }}" class="editimg"/>
+            </a>
+            <a class="removeCategory" href="{{ path('removeCategories',{'name':link.name}) }}"
+               onClick="return confirm('Are you sure you want to delete?')">
+                <img src="{{ asset('img/delete.jpg') }}" class="delimg"/>
+            </a>
+            <a class="addCategory" href="{{ path('addCategories',{'name':link.name}) }}">
+                <img src="{{ asset('img/add.jpg') }}" class="addimg"/>
+            </a>
+        {% else %}
+            <li class="Collapsable oooo">
+            <a class="editCategory" href="{{ path('editCategories',{'name':link.name}) }}">
+                <img src="{{ asset('img/edit.jpg') }}" class="editimg"/>
+            </a>
+            <a class="removeCategory" href="{{ path('removeCategories',{'name':link.name}) }}"
+               onClick="return confirm('Are you sure you want to delete?')">
+                <img src="{{ asset('img/delete.jpg') }}" class="delimg"/>
+            </a>
+            <a class="addCategory" href="{{ path('addCategories',{'name':link.name}) }}">
+                <img src="{{ asset('img/add.jpg') }}" class="addimg"/>
+            </a>
+        {% endif %}
+        <a class="categoryName">{{ link.name }}</a>
+        {% if link.children|length >= 1 %}
+            <ul>
+                {{ macros.menu_links(link.children) }}
+            </ul>
+        {% endif %}
+        </li>
+    {% endfor %}
+{% endmacro %}
+
+{% import _self as macros %}
+
+{% extends 'AntonShopBundle::layout.html.twig' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block sidebarText %}
+    <ul id="list">
+        {{ macros.menu_links(categories) }}
+    </ul>
+{% endblock %}
+
+
+{% block body %}
+    <header>
+        <h1>Categories</h1>
+    </header>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('li').click(function (event) {
+                $(this).children("ul").slideToggle();
+                event.stopPropagation();
+            });
+        });
+
+    </script>
+{% endblock %}

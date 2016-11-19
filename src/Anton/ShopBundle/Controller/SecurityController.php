@@ -9,6 +9,7 @@ use Anton\ShopBundle\Entity\UserProvider;
 use Anton\ShopBundle\Form\Recovery;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Anton\ShopBundle\Entity\User;
+
 class SecurityController extends Controller
 {
     /**
@@ -41,8 +42,6 @@ class SecurityController extends Controller
 
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-                //$password = $request->request->get('_passsword');
-
                 $username = $userr->getUsername();
                 $passwordd = $this->get('security.password_encoder')
                     ->encodePassword($userr, $userr->getPlainPassword());
@@ -50,7 +49,7 @@ class SecurityController extends Controller
                 $userr->setAccessToken(base64_encode(md5($userr->getPlainPassword().$username)));
                 $em->persist($userr);
                 $em->flush();
-                return $this->redirectToRoute('AntonShopBundle_homepage');
+                return $this->redirectToRoute('homepage');
             }
             return $this->render(
                 'AntonShopBundle:Page:signup.html.twig',

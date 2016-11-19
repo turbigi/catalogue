@@ -35,7 +35,7 @@ class RegistrationController extends Controller
             $guardHandler = $this->container->get('security.authentication.guard_handler');
             $guardHandler->authenticateUserAndHandleSuccess($user,$request,$this->get('app.form_login_authenticator'),'main');
 
-            return $this->redirectToRoute('AntonShopBundle_homepage');
+            return $this->redirectToRoute('homepage');
         }
         return $this->render(
             'AntonShopBundle:Page:signup.html.twig',

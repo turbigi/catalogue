@@ -17,8 +17,8 @@ body { line-height: 1;font-family: Arial, Helvetica, sans-serif;font-size: 12px;
 #header h2 a { color: #000; }
 #header h3 { text-align: center; font-family: 'La Belle Aurore', cursive; font-size: 24px; margin-bottom: 20px; font-weight: normal; }
 
-.main-col {  width:70%;display: inline-block; float: right; border-left: 1px solid #ccc; padding: 20px; margin-bottom: 20px; }
-.sidebar { width: 239px; padding: 10px; display: inline-block; }
+.main-col { width: 50%; display: inline-block; float: right; border-left: 1px solid #ccc; padding: 20px; margin-bottom: 20px;margin-right:20%; }
+.sidebar { width: 29%; padding: 10px; display: inline-block; }
 
 .main-col a { color: #F48A00; }
 .main-col h1,
@@ -27,3 +27,49 @@ body { line-height: 1;font-family: Arial, Helvetica, sans-serif;font-size: 12px;
 .main-col p { line-height: 1.5em; margin-bottom: 20px; }
 
 #footer { border-top: 1px solid #ccc; clear: both; text-align: center; padding: 10px; color: #aaa; }
+#list ul {margin-left:15px;
+    margin-bottom: 10px;}
+
+#list li.ooo {
+    position: relative;
+}
+#list li.ooo a:after {
+}
+#list li.ooo > a.categoryName:before {
+    content: "\00BB \0020";
+}
+#list > li a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+#list > li > ul {
+    display: none;
+}
+#list li{
+    margin-bottom:5px;
+    margin-top: 5px;
+}
+#list > li {
+    margin-bottom:13px;
+}
+.sidebar{
+    position: relative;
+}
+.sidebar .editimg {
+    position:absolute;
+    right:0;
+}
+.sidebar .addimg {
+    position:absolute;
+    right:28px;
+}
+.sidebar .delimg {
+    position:absolute;
+    right:14px;
+}
+.sidebar .editimg:hover {
+    cursor: pointer;
+}
+#list
+{
+}

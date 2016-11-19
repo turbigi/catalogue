@@ -4,7 +4,6 @@ namespace Anton\ShopBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\EquatableInterface;
@@ -87,22 +86,27 @@ class User implements UserInterface, EquatableInterface, \Serializable
     {
         $this->plainPassword = $password;
     }
+
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
+
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
     }
+
     public function getAccessToken()
     {
         return $this->accessToken;
     }
+
     public function setAccessToken($accessToken)
     {
         $this->accessToken = $accessToken;
     }
+
     public function getSalt()
     {
         return null;
@@ -261,4 +265,14 @@ class User implements UserInterface, EquatableInterface, \Serializable
         return true;
     }
 
+
+    /**
+     * Get idUser
+     *
+     * @return integer
+     */
+    public function getIdUser()
+    {
+        return $this->id_user;
+    }
 }
