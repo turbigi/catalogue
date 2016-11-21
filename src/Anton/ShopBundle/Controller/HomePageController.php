@@ -2,13 +2,9 @@
 
 namespace Anton\ShopBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Anton\ShopBundle\Form\EditCategory;
-use Doctrine\ORM\PersistentCollection;
-use Anton\ShopBundle\Entity\Category;
 
 class HomePageController extends Controller
 {
@@ -22,101 +18,70 @@ class HomePageController extends Controller
     }
 
     /**
-     * @Route("/categories/edit/{name}", name="editCategories")
+     * @Route("/catalogue/category/{id}", name="category")
      */
-
-    public function categoriesEditAction(Request $request, $name)
+    public function categoriesAction(Request $request, $id = null)
     {
-        $alll = [];
-        $this->get('cache.app')->deleteItem('cache_categories');
-        $em = $this->getDoctrine()->getManager();
-        $category = $em->getRepository('AntonShopBundle:Category')->findOneByName($name);
-        $allcategory = $em->getRepository('AntonShopBundle:Category')->findAll();
+        $cacheCategories = $this->get('cache.app')->getItem('cache_categories');
+        $entityManager = $this->getDoctrine()->getManager();
 
-        foreach ($allcategory as $all) {
-            $alll[] = $all->getName();
-        }
-        dump($category->getName());
-        $form = $this->createForm(EditCategory::class, $category);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            //$password = $request->request->get('_passsword');
-            $categoryName = $category->getName();
-            $em->persist($category);
-            $em->flush();
-            return $this->redirectToRoute('categories');
-        }
-        return $this->render(
-            'AntonShopBundle:Page:categoryEdit.html.twig',
-            array('form' => $form->createView())
-        );
-    }
+        $treeOfCategories = $this->checkCache($cacheCategories, $entityManager);
 
-    /**
-     * @Route("/categories/add/{name}", name="addCategories")
-     */
-
-    public function categoriesAddAction(Request $request, $name)
-    {
-        $this->get('cache.app')->deleteItem('cache_categories');
-        $em = $this->getDoctrine()->getManager();
-        $newCategory = new Category();
-        $category = $em->getRepository('AntonShopBundle:Category')->findOneByName($name);
-        $form = $this->createForm(EditCategory::class, $newCategory);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $newCategory->setParent($category);
-            $em->persist($category);
-            $em->persist($newCategory);
-            $em->flush();
-            return $this->redirectToRoute('categories');
-        }
-        return $this->render(
-            'AntonShopBundle:Page:categoryEdit.html.twig',
-            array('form' => $form->createView())
-        );
-    }
-
-    /**
-     * @Route("/categories/remove/{name}", name="removeCategories")
-     */
-
-    public function categoriesRemoveAction(Request $request, $name)
-    {
-        $this->get('cache.app')->deleteItem('cache_categories');
-        $em = $this->getDoctrine()->getManager();
-        $category = $em->getRepository('AntonShopBundle:Category')->findOneByName($name);
-        $em->remove($category);
-        $em->flush();
-        return $this->redirectToRoute('categories');
-    }
-
-
-    /**
-     * @Route("/categories", name="categories")
-     */
-
-    public function categoriesAction(Request $request)
-    {
-        $numProducts = $this->get('cache.app')->getItem('cache_categories');
-        if (!$numProducts->isHit()) {
-            $em = $this->getDoctrine()->getManager();
-            $cat = $em->getRepository('Anton\ShopBundle\Entity\Category')->findByParent(NULL);
-            $lul = $this->lol($cat, 1);
-            $this->get('cache.app')->save($numProducts->set($lul));
+        if (!$id) {
+            return $this->redirectToRoute('catalogue');
         } else {
-            $lul = $numProducts->get();
+            $category = $entityManager->getRepository('AntonShopBundle:Category')->findOneById($id);
+            if (!$category) {
+                dump('');
+                return $this->redirectToRoute('catalogue');
+            }
+            $products = $category->getProducts();
         }
-        return $this->render('AntonShopBundle:Page:categories.html.twig', ['categories' => $lul]);
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $products,
+            $request->query->getInt('page', 1),
+            1
+        );
+        return $this->render('AntonShopBundle:Page:categories.html.twig', ['pagination' => $pagination, 'categories' => $treeOfCategories, 'products' => $products]);
     }
 
-    public function lol(Array $categories, $parentId = 1)
+    /**
+     * @Route("/catalogue", name="catalogue")
+     */
+    public function catalogueAction(Request $request, $categoryId = null)
+    {
+        $cacheCategories = $this->get('cache.app')->getItem('cache_categories');
+        $entityManager = $this->getDoctrine()->getManager();
+        $treeOfCategories = $this->checkCache($cacheCategories, $entityManager);
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            [],
+            $request->query->getInt('page', 1),
+            1
+        );
+        return $this->render('AntonShopBundle:Page:categories.html.twig', ['pagination' => $pagination, 'categories' => $treeOfCategories]);
+    }
+
+    public function checkCache($cacheCategories, $entityManager)
+    {
+        if (!$cacheCategories->isHit()) {
+            $categories = $entityManager->getRepository('AntonShopBundle:Category')->findByParent(NULL);
+            $treeOfCategories = $this->buildTree($categories);
+            $this->get('cache.app')->save($cacheCategories->set($treeOfCategories));
+        } else {
+            $treeOfCategories = $cacheCategories->get();
+        }
+        return $treeOfCategories;
+    }
+
+    public function buildTree($categories)
     {
         $branch = [];
-        foreach ($categories as $element) {
-            if ($element->getChildren()) {
-                $children = $this->lol($element->getChildren()->toArray(), $element->getId());
-                $branch[] = $element;
+        foreach ($categories as $category) {
+            if ($category->getChildren()) {
+                $this->buildTree($category->getChildren()->toArray());
+                $branch[] = $category;
             }
         }
         return $branch;

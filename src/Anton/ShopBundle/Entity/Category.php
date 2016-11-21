@@ -2,6 +2,7 @@
 
 namespace Anton\ShopBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
@@ -38,13 +39,17 @@ class Category
      */
     private $isActive;
 
-
+    /**
+     * @ORM\OneToMany(targetEntity="Product", mappedBy="category")
+     */
+    private $products;
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     /**
@@ -161,5 +166,39 @@ class Category
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * Add product
+     *
+     * @param \Anton\ShopBundle\Entity\Product $product
+     *
+     * @return Category
+     */
+    public function addProduct(\Anton\ShopBundle\Entity\Product $product)
+    {
+        $this->products[] = $product;
+
+        return $this;
+    }
+
+    /**
+     * Remove product
+     *
+     * @param \Anton\ShopBundle\Entity\Product $product
+     */
+    public function removeProduct(\Anton\ShopBundle\Entity\Product $product)
+    {
+        $this->products->removeElement($product);
+    }
+
+    /**
+     * Get products
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProducts()
+    {
+        return $this->products;
     }
 }

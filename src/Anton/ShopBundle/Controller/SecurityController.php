@@ -5,9 +5,7 @@ namespace Anton\ShopBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Anton\ShopBundle\Entity\UserProvider;
 use Anton\ShopBundle\Form\Recovery;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Anton\ShopBundle\Entity\User;
 
 class SecurityController extends Controller

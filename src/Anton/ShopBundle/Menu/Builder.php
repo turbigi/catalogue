@@ -1,9 +1,9 @@
 <?php
 namespace Anton\ShopBundle\Menu;
 
-use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Knp\Menu\FactoryInterface;
 
 class Builder implements ContainerAwareInterface
 {
@@ -15,11 +15,12 @@ class Builder implements ContainerAwareInterface
 
         $menu->setChildrenAttributes(array('class' => 'nav nav-pills'));
         $name = $options['username'];
-        $menu->addChild($name, array('route' => 'AntonShopBundle_homepage', 'attributes' => array('class' => 'dropdown pull-right btnn', 'caret' => 'lol')));
+        $menu->addChild($name, array('route' => 'homepage', 'attributes' => array('class' =>
+            'dropdown pull-right btnn', 'caret' => 'lol')));
         $menu[$name]->setLinkAttributes(array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'));
         $menu[$name]->setChildrenAttributes(array('class' => 'dropdown-menu'));
 
-        $menu[$name]->addChild('Dashboard', array('route' => 'AntonShopBundle_homepage'));
+        $menu[$name]->addChild('Dashboard', array('route' => 'homepage'));
         $menu[$name]->addChild(NULL, array('attributes' => array('class' => 'divider')));
         $menu[$name]->addChild('Exit', array('route' => 'logout'));
 

@@ -28,12 +28,12 @@ class RegistrationController extends Controller
             $user->setPassword($password);
             $user->setRole('ROLE_USER');
             $username = $user->getUsername();
-            $user->setAccessToken(base64_encode(md5($password.$username)));
+            $user->setAccessToken(base64_encode(md5($password . $username)));
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
             $guardHandler = $this->container->get('security.authentication.guard_handler');
-            $guardHandler->authenticateUserAndHandleSuccess($user,$request,$this->get('app.form_login_authenticator'),'main');
+            $guardHandler->authenticateUserAndHandleSuccess($user, $request, $this->get('app.form_login_authenticator'), 'main');
 
             return $this->redirectToRoute('homepage');
         }

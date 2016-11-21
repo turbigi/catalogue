@@ -2,17 +2,18 @@
 
 namespace Anton\ShopBundle\Form;
 
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Anton\ShopBundle\Entity\Category;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormEvent;
+use Anton\ShopBundle\Entity\Category;
 
-class EditCategory extends AbstractType
+class CategoryType extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -25,19 +26,29 @@ class EditCategory extends AbstractType
             ))
             ->add('parent', EntityType::class, array(
                 'class' => 'Anton\ShopBundle\Entity\Category',
-                'choice_label' => function ($category) {
-                    return $category->getName();
-                },
+                'choices' => $options['parents'],
+                'choice_label' => 'name',
                 'empty_data' => null,
-                'required' => true,
-
+                'placeholder' => 'root',
+                'required' => false,
             ));
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $product = $event->getData();
+            $form = $event->getForm();
+
+            if (!$product || null === $product->getId()) {
+                $form->remove('parent');
+            }
+        });
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'Anton\ShopBundle\Entity\Category',
+            'parents' => [],
         ));
     }
 

@@ -57,7 +57,7 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        $url = $this->router->generate('AntonShopBundle_homepage');
+        $url = $this->router->generate('homepage');
 
         return new RedirectResponse($url);
     }
@@ -78,7 +78,7 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getDefaultSuccessRedirectUrl()
     {
-        return $this->router->generate('AntonShopBundle_homepage');
+        return $this->router->generate('homepage');
     }
 
     public function supportsRememberMe()

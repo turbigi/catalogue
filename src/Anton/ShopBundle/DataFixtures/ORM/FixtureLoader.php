@@ -3,10 +3,10 @@ namespace Anton\ShopBundle\DataFixtures\ORM;
 
 use Anton\ShopBundle\Entity\Category;
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Anton\ShopBundle\Entity\User;
-use Anton\ShopBundle\Entity\Role;
-use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use Anton\ShopBundle\Entity\Product;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\File;
+
 class FixtureLoader implements FixtureInterface
 {
     public function load(ObjectManager $manager)
@@ -14,6 +14,30 @@ class FixtureLoader implements FixtureInterface
         $categoryr = new Category();
         $categoryr->setIsActive(1);
         $categoryr->setName('root');
+        $categoryr->setParent(null);
+
+        $product = new Product();
+        $product->setName('Keyboard');
+        $product->setDescription('dfsdfsdfsdfdsfsdfsdfsdfsdfsdfdsfsdfsdfsdfsdfsdfdsfsdfsdfsdfsdfsdf');
+        $product->setCreatedAt(new \DateTime());
+        $product->setUpdatedAt(new \DateTime());
+        $product->setIsActive(true);
+        $product->setSku(123456);
+        $product->setCategory($categoryr);
+        $product->setPicture(
+            new File('web/img/products/smile.jpg')
+        );
+        $product2 = new Product();
+        $product2->setName('retyuitr');
+        $product2->setDescription('dfsdfsdfsdfsdf');
+        $product2->setCreatedAt(new \DateTime());
+        $product2->setUpdatedAt(new \DateTime());
+        $product2->setIsActive(true);
+        $product2->setSku(1234567);
+        $product2->setCategory($categoryr);
+        $product2->setPicture(
+            new File('web/img/products/smile.jpg')
+        );
 
         $category = new Category();
         $category->setIsActive(1);
@@ -64,6 +88,8 @@ class FixtureLoader implements FixtureInterface
 
 
         $manager->persist($categoryr);
+        $manager->persist($product);
+        $manager->persist($product2);
         $manager->persist($category);
         $manager->persist($category2);
         $manager->persist($category3);

@@ -85,4 +85,18 @@ class Role implements RoleInterface
     {
         return md5($this->getUsername()) == md5($user->getUsername());
     }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Role
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
 }
