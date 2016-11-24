@@ -26,7 +26,7 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
 
     public function getCredentials(Request $request)
     {
-        if ($request->getPathInfo() != '/login_check') {
+        if ($request->getPathInfo() != '/login/check') {
             return;
         }
 
@@ -66,14 +66,14 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
     {
         $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
 
-        $url = $this->router->generate('security_login');
+        $url = $this->router->generate('securityLogin');
 
         return new RedirectResponse($url);
     }
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('security_login');
+        return $this->router->generate('securityLogin');
     }
 
     protected function getDefaultSuccessRedirectUrl()

@@ -11,7 +11,7 @@ use Anton\ShopBundle\Entity\Category;
 class CategoryController extends Controller
 {
     /**
-     * @Route("/category/edit/{id}", name="categoryEdit")
+     * @Route("/category/{id}/edit", name="categoryEdit")
      */
     public function categoryEditAction(Request $request, $id = null)
     {
@@ -80,18 +80,18 @@ class CategoryController extends Controller
     }
 
     /**
-     * @Route("/category/remove/{id}", name="categoryRemove")
+     * @Route("/category/{id}/remove", name="categoryRemove")
      */
 
     public function categoryRemoveAction(Request $request, $id = null)
     {
-        $em = $this->getDoctrine()->getManager();
-        $category = $em->getRepository('AntonShopBundle:Category')->findOneById($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        $category = $entityManager->getRepository('AntonShopBundle:Category')->findOneById($id);
         if (!$category) {
             return $this->redirect($this->generateUrl('catalogue'));
         }
-        $em->remove($category);
-        $em->flush();
+        $entityManager->remove($category);
+        $entityManager->flush();
         $this->get('cache.app')->deleteItem('cache_categories');
         return $this->redirectToRoute('catalogue');
     }

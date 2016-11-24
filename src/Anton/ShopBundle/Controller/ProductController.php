@@ -26,12 +26,16 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/product/new", name="newProduct")
+     * @Route("/product/add/{categoryId}", name="newProduct")
      */
     public function productNewAction(Request $request, $categoryId = null)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $product = new Product();
+        if ($categoryId) {
+            $category = $entityManager->getRepository('AntonShopBundle:Category')->findOneById($categoryId);
+            $product->setCategory($category);
+        }
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
@@ -48,6 +52,7 @@ class ProductController extends Controller
 
             $product->setSku(uniqid());
             $product->setPicture($fileName);
+
             $entityManager->persist($product);
             $entityManager->flush();
             return $this->redirectToRoute('catalogue');
@@ -59,7 +64,7 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/product/edit/{sku}", name="editProduct")
+     * @Route("/product/{sku}/edit", name="editProduct")
      */
     public function productEditAction(Request $request, $sku = null)
     {
@@ -88,11 +93,26 @@ class ProductController extends Controller
             $entityManager->persist($product);
             $entityManager->flush();
 
-            return $this->redirect($this->generateUrl('catalogue'));
+            return $this->redirectToRoute('catalogue');
         }
 
         return $this->render('product/productNew.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    /**
+     * @Route("/product/{sku}/remove", name="removeProduct")
+     */
+    public function productRemoveAction(Request $request, $sku = null)
+    {
+        $entityManager  = $this->getDoctrine()->getManager();
+        $product = $entityManager ->getRepository('AntonShopBundle:Product')->findOneBySku($sku);
+        if (!$product) {
+            return $this->redirectToRoute('catalogue');
+        }
+        $entityManager->remove($product);
+        $entityManager->flush();
+        return $this->redirectToRoute('catalogue');
     }
 }

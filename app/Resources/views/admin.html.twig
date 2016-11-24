@@ -1,0 +1,36 @@
+{% extends 'AntonShopBundle::layout.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+{% block body %}
+    <header>
+        <h1>Dashboard</h1>
+    </header>
+
+    <div class="myclass">
+
+    </div>
+    <input type="submit" value="Confirm" class="imgProjet"/>
+    <p class="lol"></p>
+    <script type="text/javascript">
+        $('.imgProjet').click(function() {
+            $.ajax({
+                url: 'http://localhost:8000/admins',
+                type: 'POST',
+                dataType: 'json',
+                success: function(data) {
+                    $('.lol').text(data.username);
+                }
+            });
+        });
+        $(document).ready(function () {
+            $(".myclass").ajaxgrid({
+                dataUrl: 'http://localhost:8000/ajax/products',
+                sortableColumns: ["id_user", "username"],
+                filterableColumns: ["id_user", "username"],
+            });
+        });
+    </script>
+{% endblock %}

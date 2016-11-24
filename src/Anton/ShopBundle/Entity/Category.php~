@@ -167,4 +167,38 @@ class Category
     {
         return $this->children;
     }
+
+    /**
+     * Add product
+     *
+     * @param \Anton\ShopBundle\Entity\Product $product
+     *
+     * @return Category
+     */
+    public function addProduct(\Anton\ShopBundle\Entity\Product $product)
+    {
+        $this->products[] = $product;
+
+        return $this;
+    }
+
+    /**
+     * Remove product
+     *
+     * @param \Anton\ShopBundle\Entity\Product $product
+     */
+    public function removeProduct(\Anton\ShopBundle\Entity\Product $product)
+    {
+        $this->products->removeElement($product);
+    }
+
+    /**
+     * Get products
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
 }

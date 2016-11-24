@@ -2,21 +2,23 @@
 
 namespace Anton\ShopBundle\Controller;
 
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Anton\ShopBundle\Form\UserType;
 use Anton\ShopBundle\Entity\User;
 
-class RegistrationController extends Controller
+class SignUpController extends Controller
 {
     /**
-     * @Route("/signup", name="AntonShopBundle_signup")
+     * @Route("/signup", name="signUp")
      */
 
-    public function registerAction(Request $request)
+    public function signUpAction(Request $request)
     {
+        if (true === $this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('homepage');
+        }
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -29,9 +31,9 @@ class RegistrationController extends Controller
             $user->setRole('ROLE_USER');
             $username = $user->getUsername();
             $user->setAccessToken(base64_encode(md5($password . $username)));
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
             $guardHandler = $this->container->get('security.authentication.guard_handler');
             $guardHandler->authenticateUserAndHandleSuccess($user, $request, $this->get('app.form_login_authenticator'), 'main');
 

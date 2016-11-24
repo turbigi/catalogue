@@ -5,7 +5,7 @@
 {% block body %}
     {{ form_start(form, { 'apikey':apiKey,'attr': {'class': 'anton'} }) }}
     {{ form_errors(form) }}
-    {{ form_widget(form) }}
-    <input type="submit" value="Register"/>
+    {{ form_row(form.plainPassword) }}
+    <input type="submit" value="Confirm"/>
     {{ form_end(form) }}
 {% endblock %}

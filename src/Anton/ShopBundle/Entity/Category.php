@@ -4,6 +4,7 @@ namespace Anton\ShopBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="category")
@@ -19,6 +20,10 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=64)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=1)
+     * @Assert\Length(max=30)
+     * @Assert\Regex("/^[a-zA-Z\s]+$/")
      */
     private $name;
 

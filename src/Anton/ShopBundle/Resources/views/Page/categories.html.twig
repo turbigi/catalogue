@@ -22,11 +22,11 @@
                onClick="return confirm('Are you sure you want to delete?')">
                 <img src="{{ asset('img/delete.jpg') }}" class="delimg"/>
             </a>
-            <a class="addCategory" href="{{ path('categoryAdd',{'id':link.id}) }}">
+            <a class="addCategory" href="{{ path('categoryAdd',{'name':link.id}) }}">
                 <img src="{{ asset('img/add.jpg') }}" class="addimg"/>
             </a>
         {% endif %}
-        <a href="{{ path('categoryAdd',{'id':'root'}) }}" class="categoryName">{{ link.name }}</a>
+        <a href="{{ path('categoryAdd',{'category':'root'}) }}" class="categoryName">{{ link.name }}</a>
         {% if link.children|length >= 1 %}
             <ul>
                 {{ macros.menu_links(link.children) }}
@@ -73,6 +73,11 @@
                     <p class="description">{{ article.description }}</p>
                     <p><b>Created:</b> {{ article.createdAt | date('m/d/Y H:i:s') }}</p>
                     <p><b>Updated:</b> {{ article.updatedAt | date('m/d/Y H:i:s') }}</p>
+                    {% if article.relatedProducts|length >= 1 %}
+                        {% for i in article.relatedProducts %}
+                            <p><b>Updated:</b> {{ i.name }}</p>
+                        {% endfor %}
+                    {%  endif %}
                 </section>
             </div>
         </div>
@@ -81,19 +86,4 @@
     <div class="navigation">
         {{ knp_pagination_render(pagination) }}
     </div>
-
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('a.categoryName').click(function () {
-                if ($(this).parent('li').hasClass("oooo"))
-                    return true;
-                if ($(this).parent('li').hasClass("ooo")) {
-                    $(this).next('ul').slideToggle();
-                    return false;
-                }
-            })
-        });
-
-    </script>
 {% endblock %}

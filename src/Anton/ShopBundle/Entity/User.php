@@ -2,17 +2,18 @@
 
 namespace Anton\ShopBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
  */
-class User implements UserInterface, EquatableInterface, \Serializable
+class User implements AdvancedUserInterface, EquatableInterface, \Serializable
 {
     /**
      * @ORM\Column(type="integer")
@@ -20,10 +21,12 @@ class User implements UserInterface, EquatableInterface, \Serializable
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id_user;
-
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank()
+     * @Assert\Length(min=5)
+     * @Assert\Length(max=15)
+     * @Assert\Regex("/^[a-zA-Z0-9_]+$/")
      */
 
     private $username;
@@ -46,14 +49,19 @@ class User implements UserInterface, EquatableInterface, \Serializable
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max=4096)
+     * @Assert\Length(min=5)
+     * @Assert\Length(max=15)
+     * @Assert\Regex("/^[a-zA-Z0-9_.,]+$/")     *
      */
     private $plainPassword;
 
     /**
      * @ORM\Column(type="string", length=60, unique=true)
      * @Assert\NotBlank()
-     * @Assert\Email()
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
      */
     private $email;
     /**
@@ -145,6 +153,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
             $this->id_user,
             $this->username,
             $this->password,
+            $this->isActive,
             // see section on salt below
             // $this->salt,
         ));
@@ -157,6 +166,7 @@ class User implements UserInterface, EquatableInterface, \Serializable
             $this->id_user,
             $this->username,
             $this->password,
+            $this->isActive,
             // see section on salt below
             // $this->salt
             ) = unserialize($serialized);
@@ -244,6 +254,26 @@ class User implements UserInterface, EquatableInterface, \Serializable
      * @return boolean
      */
     public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    public function isEnabled()
     {
         return $this->isActive;
     }

@@ -1,0 +1,74 @@
+#ajaxtable {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border-radius: 10px;
+    border-spacing: 0;
+    text-align: center;
+}
+
+#ajaxtable th {
+    background: #BCEBDD;
+    color: white;
+    text-shadow: 0 1px 1px #2D2020;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+#ajaxtableth, 
+#ajaxtable td {
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    border-color: white;
+}
+
+#ajaxtable th:first-child, 
+#ajaxtable td:first-child {
+    text-align: left;
+}
+
+#ajaxtable th:first-child {
+    border-top-left-radius: 10px;
+}
+
+#ajaxtable th:last-child {
+    border-top-right-radius: 10px;
+    border-right: none;
+}
+
+#ajaxtable td {
+    padding: 10px 20px;
+    background: #F8E391;
+}
+
+#ajaxtable tr:last-child td:first-child {
+    border-radius: 0 0 0 10px;
+}
+
+#ajaxtable tr:last-child td:last-child {
+    border-radius: 0 0 10px 0;
+}
+
+#ajaxtable tr td:last-child {
+    border-right: none;
+}
+
+#ajaxtable th:hover {
+    background: #f3bd48;
+    color: #fff;
+    cursor: pointer;
+}
+
+.container2 {
+    width: 90px;
+}
+
+.selectclass {
+    width: 50px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-right: 50px;
+}
+#incontainer{
+    overflow-y: auto;
+    margin-top: 20px;
+}

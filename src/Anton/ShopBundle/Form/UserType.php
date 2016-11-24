@@ -1,6 +1,7 @@
 <?php
 namespace Anton\ShopBundle\Form;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -8,6 +9,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormEvent;
 
 class UserType extends AbstractType
 {
@@ -21,13 +24,29 @@ class UserType extends AbstractType
                     'first_options' => array('label' => 'Password'),
                     'second_options' => array('label' => 'Repeat Password'),
                 )
-            );
+            )
+            ->add('role', ChoiceType::class, array(
+                'choices' => [
+                    'ROLE_USER' => 'ROLE_USER',
+                    'ROLE_MODERATOR' => 'ROLE_MODERATOR',
+                    'ROLE_ADMIN' => 'ROLE_ADMIN',
+                ],
+            ));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+
+            $form = $event->getForm();
+
+            if (!$options['role']) {
+                $form->remove('role');
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'Anton\ShopBundle\Entity\User',
+            'role' => [],
         ));
     }
 }

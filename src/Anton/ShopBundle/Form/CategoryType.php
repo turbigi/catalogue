@@ -34,10 +34,10 @@ class CategoryType extends AbstractType
             ));
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $product = $event->getData();
+            $parents = $event->getData();
             $form = $event->getForm();
 
-            if (!$product || null === $product->getId()) {
+            if (!$parents || null === $parents->getId()) {
                 $form->remove('parent');
             }
         });

@@ -4,6 +4,7 @@ namespace Anton\ShopBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="product")
@@ -19,10 +20,17 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=64)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=1)
+     * @Assert\Length(max=30)
+     * @Assert\Regex("/^[a-zA-Z\s]+$/")
      */
     private $name;
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=1)
+     * @Assert\Length(max=100)
      */
     private $description;
     /**
@@ -54,6 +62,18 @@ class Product
      * @Assert\File(mimeTypes={ "image/jpeg" },mimeTypesMessage = "Please upload a valid image")
      */
     private $picture;
+    /**
+     * @ORM\ManyToMany(targetEntity="Product", mappedBy="relatedProducts")
+     */
+    private $relatedProductsWithThis;
+    /**
+     * @ORM\ManyToMany(targetEntity="Product", inversedBy="relatedProductsWithThis")
+     * @ORM\JoinTable(name="related_products",
+     *      joinColumns={@ORM\JoinColumn(name="product_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="related_product_id", referencedColumnName="id")}
+     *      )
+     */
+    private $relatedProducts;
 
     public function getPicture()
     {
@@ -244,5 +264,81 @@ class Product
     public function getCategory()
     {
         return $this->category;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->relatedProductsWithThis = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->relatedProducts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add relatedProductsWithThi
+     *
+     * @param \Anton\ShopBundle\Entity\Product $relatedProductsWithThi
+     *
+     * @return Product
+     */
+    public function addRelatedProductsWithThi(\Anton\ShopBundle\Entity\Product $relatedProductsWithThi)
+    {
+        $this->relatedProductsWithThis[] = $relatedProductsWithThi;
+
+        return $this;
+    }
+
+    /**
+     * Remove relatedProductsWithThi
+     *
+     * @param \Anton\ShopBundle\Entity\Product $relatedProductsWithThi
+     */
+    public function removeRelatedProductsWithThi(\Anton\ShopBundle\Entity\Product $relatedProductsWithThi)
+    {
+        $this->relatedProductsWithThis->removeElement($relatedProductsWithThi);
+    }
+
+    /**
+     * Get relatedProductsWithThis
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRelatedProductsWithThis()
+    {
+        return $this->relatedProductsWithThis;
+    }
+
+    /**
+     * Add relatedProduct
+     *
+     * @param \Anton\ShopBundle\Entity\Product $relatedProduct
+     *
+     * @return Product
+     */
+    public function addRelatedProduct(\Anton\ShopBundle\Entity\Product $relatedProduct)
+    {
+        $this->relatedProducts[] = $relatedProduct;
+
+        return $this;
+    }
+
+    /**
+     * Remove relatedProduct
+     *
+     * @param \Anton\ShopBundle\Entity\Product $relatedProduct
+     */
+    public function removeRelatedProduct(\Anton\ShopBundle\Entity\Product $relatedProduct)
+    {
+        $this->relatedProducts->removeElement($relatedProduct);
+    }
+
+    /**
+     * Get relatedProducts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRelatedProducts()
+    {
+        return $this->relatedProducts;
     }
 }
