@@ -26,11 +26,11 @@ class SignUpController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPlainPassword());
-            $user->setCreatedAt(new \DateTime());
+            $user->setLastLoginTime(new \DateTime());
             $user->setPassword($password);
             $user->setRole('ROLE_USER');
             $username = $user->getUsername();
-            $user->setAccessToken(base64_encode(md5($password . $username)));
+            $user->setApiKey(base64_encode(md5($password . $username)));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();

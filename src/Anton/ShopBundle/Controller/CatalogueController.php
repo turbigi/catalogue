@@ -14,6 +14,7 @@ class CatalogueController extends Controller
 
     public function homepageAction(Request $request)
     {
+
         return $this->render('AntonShopBundle:Page:index.html.twig');
     }
 

@@ -8,16 +8,16 @@ use Doctrine\ORM\EntityManager;
 
 class UserProvider implements UserProviderInterface
 {
-    private $em;
+    private $entityManager;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
 
     public function loadUserByUsername($username)
     {
-        $user = $this->em->getRepository('AntonShopBundle:User')->findOneBy(['username' => $username]);
+        $user = $this->entityManager->getRepository('AntonShopBundle:User')->findOneBy(['username' => $username]);
         if (!$user) {
             throw new UsernameNotFoundException();
         }

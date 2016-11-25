@@ -6,7 +6,6 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,34 +15,33 @@ use Doctrine\ORM\Mapping as ORM;
 class User implements AdvancedUserInterface, EquatableInterface, \Serializable
 {
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id_user;
+
     /**
-     * @ORM\Column(type="string", length=25, unique=true)
+     * @ORM\Column()
      * @Assert\NotBlank()
      * @Assert\Length(min=5)
      * @Assert\Length(max=15)
      * @Assert\Regex("/^[a-zA-Z0-9_]+$/")
      */
-
     private $username;
 
     /**
-     * Тут мы будем хранить наш токен. Токен необходимо генерировать самому и как можно сложнее и длиннее, чтобы исключить возможность подбора
-     *
-     * @ORM\Column(name="access_token", type="string")
+     * @ORM\Column(name="apikey")
      */
-    private $accessToken;
+    private $apiKey;
 
     /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @ORM\Column(name="last_login", type="datetime")
      */
-    private $createdAt;
+    private $lastLoginTime;
+
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column()
      */
     private $password;
 
@@ -56,33 +54,46 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
     private $plainPassword;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true)
+     * @ORM\Column()
      * @Assert\NotBlank()
+     * @Assert\Length(max=30)
      * @Assert\Email(
-     *     message = "The email '{{ value }}' is not a valid email.",
+     *     message = "The email '{{ value }}' is not a valid.",
      *     checkMX = true
      * )
      */
     private $email;
+
     /**
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(name="is_active")
      */
     private $isActive;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column()
      */
     private $role;
 
     public function __construct()
     {
         $this->isActive = true;
-        $this->roles = new ArrayCollection();
+    }
+
+    public function getId()
+    {
+        return $this->id_user;
     }
 
     public function getUsername()
     {
         return $this->username;
+    }
+
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
     }
 
     public function getPlainPassword()
@@ -95,29 +106,24 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
         $this->plainPassword = $password;
     }
 
-    public function getCreatedAt()
+    public function getLastLoginTime()
     {
-        return $this->createdAt;
+        return $this->lastLoginTime;
     }
 
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setLastLoginTime(\DateTime $lastLoginTime)
     {
-        $this->createdAt = $createdAt;
+        $this->lastLoginTime = $lastLoginTime;
     }
 
-    public function getAccessToken()
+    public function getApiKey()
     {
-        return $this->accessToken;
+        return $this->apiKey;
     }
 
-    public function setAccessToken($accessToken)
+    public function setApiKey($apiKey)
     {
-        $this->accessToken = $accessToken;
-    }
-
-    public function getSalt()
-    {
-        return null;
+        $this->apiKey = $apiKey;
     }
 
     public function getPassword()
@@ -125,6 +131,12 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
         return $this->password;
     }
 
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
 
     public function getRole()
     {
@@ -141,82 +153,6 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
         return [$this->getRole()];
     }
 
-    public function eraseCredentials()
-    {
-        return null;
-    }
-
-    /** @see \Serializable::serialize() */
-    public function serialize()
-    {
-        return serialize(array(
-            $this->id_user,
-            $this->username,
-            $this->password,
-            $this->isActive,
-            // see section on salt below
-            // $this->salt,
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id_user,
-            $this->username,
-            $this->password,
-            $this->isActive,
-            // see section on salt below
-            // $this->salt
-            ) = unserialize($serialized);
-    }
-
-    /**
-     * Get user_id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id_user;
-    }
-
-    /**
-     * Set username
-     *
-     * @param string $username
-     *
-     * @return User
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Set password
-     *
-     * @param string $password
-     *
-     * @return User
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     *
-     * @return User
-     */
     public function setEmail($email)
     {
         $this->email = $email;
@@ -224,23 +160,11 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * Get email
-     *
-     * @return string
-     */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     *
-     * @return User
-     */
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
@@ -248,14 +172,39 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
         return $this;
     }
 
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+        return null;
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id_user,
+            $this->username,
+            $this->password,
+            $this->isActive,
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id_user,
+            $this->username,
+            $this->password,
+            $this->isActive,
+            ) = unserialize($serialized);
     }
 
     public function isAccountNonExpired()
@@ -293,16 +242,5 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
         }
 
         return true;
-    }
-
-
-    /**
-     * Get idUser
-     *
-     * @return integer
-     */
-    public function getIdUser()
-    {
-        return $this->id_user;
     }
 }

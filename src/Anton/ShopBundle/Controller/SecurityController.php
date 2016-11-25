@@ -36,7 +36,7 @@ class SecurityController extends Controller
         $apiKey = $request->query->get('apikey');
         if ($apiKey) {
             $entityManager = $this->getDoctrine()->getManager();
-            $user = $entityManager->getRepository('AntonShopBundle:User')->findOneByAccessToken($apiKey);
+            $user = $entityManager->getRepository('AntonShopBundle:User')->findOneByApiKey($apiKey);
             if (!$user) {
                 return $this->redirectToRoute('homepage');
             }
@@ -48,7 +48,7 @@ class SecurityController extends Controller
                 $password = $this->get('security.password_encoder')
                     ->encodePassword($user, $user->getPlainPassword());
                 $user->setPassword($password);
-                $user->setAccessToken(base64_encode(md5($user->getPlainPassword() . $username)));
+                $user->setApiKey(base64_encode(md5($user->getPlainPassword() . $username)));
                 $entityManager->persist($user);
                 $entityManager->flush();
                 return $this->redirectToRoute('homepage');

@@ -1,4 +1,5 @@
 <?php
+
 namespace Anton\ShopBundle\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

@@ -2,28 +2,28 @@
 
 namespace Anton\ShopBundle\EventListener;
 
-use Anton\ShopBundle\Entity\User;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\SecurityEvents;
+use Doctrine\ORM\EntityManager;
 
 class LastLoginTime implements EventSubscriberInterface
 {
-    private $em;
+    private $entityManager;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $entityManager)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
     }
+
     public function onInteractiveLogin(InteractiveLoginEvent $event)
     {
-        /** @var User $user */
         $user = $event->getAuthenticationToken()->getUser();
-        $user->setCreatedAt(new \DateTime());
-        $this->em->persist($user);
-        $this->em->flush($user);
+        $user->setLastLoginTime(new \DateTime());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush($user);
     }
+
     public static function getSubscribedEvents()
     {
         return array(SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin');
