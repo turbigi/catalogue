@@ -14,8 +14,7 @@ class CatalogueController extends Controller
 
     public function homepageAction(Request $request)
     {
-
-        return $this->render('AntonShopBundle:Page:index.html.twig');
+        return $this->render('default/index.html.twig');
     }
 
     /**
@@ -33,7 +32,6 @@ class CatalogueController extends Controller
         } else {
             $category = $entityManager->getRepository('AntonShopBundle:Category')->findOneById($id);
             if (!$category) {
-                dump('');
                 return $this->redirectToRoute('catalogue');
             }
             $products = $category->getProducts();
@@ -42,9 +40,14 @@ class CatalogueController extends Controller
         $pagination = $paginator->paginate(
             $products,
             $request->query->getInt('page', 1),
-            1
+            2
         );
-        return $this->render('AntonShopBundle:Page:categories.html.twig', ['pagination' => $pagination, 'categories' => $treeOfCategories, 'products' => $products]);
+        return $this->render('catalogue/catalogue.html.twig', [
+            'pagination' => $pagination,
+            'categories' => $treeOfCategories,
+            'products' => $products,
+            'categoryId' => $id,
+        ]);
     }
 
     /**
@@ -61,7 +64,11 @@ class CatalogueController extends Controller
             $request->query->getInt('page', 1),
             1
         );
-        return $this->render('AntonShopBundle:Page:categories.html.twig', ['pagination' => $pagination, 'categories' => $treeOfCategories]);
+        return $this->render('catalogue/catalogue.html.twig', [
+            'pagination' => $pagination,
+            'categories' => $treeOfCategories,
+            'categoryId' => '',
+        ]);
     }
 
     public function checkCache($cacheCategories, $entityManager)

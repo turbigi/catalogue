@@ -22,7 +22,9 @@ class ProductController extends Controller
         if (!$product) {
             return $this->redirectToRoute('catalogue');
         }
-        return $this->render('product/productPage.html.twig', ['product' => $product]);
+        return $this->render('product/page_product.html.twig', [
+            'product' => $product,
+        ]);
     }
 
     /**
@@ -33,8 +35,7 @@ class ProductController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $product = new Product();
         if ($categoryId) {
-            $category = $entityManager->getRepository('AntonShopBundle:Category')->findOneById($categoryId);
-            $product->setCategory($category);
+            $product->setCategory($entityManager->getReference('Anton\ShopBundle\Entity\Category', $categoryId));
         }
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
@@ -58,9 +59,10 @@ class ProductController extends Controller
             return $this->redirectToRoute('catalogue');
         }
 
-        return $this->render('product/productNew.html.twig', array(
+        return $this->render('product/new_product.html.twig', [
             'form' => $form->createView(),
-        ));
+            'title_text' => 'New product',
+        ]);
     }
 
     /**
@@ -73,6 +75,7 @@ class ProductController extends Controller
         if (!$product) {
             return $this->redirectToRoute('catalogue');
         }
+        $oldImagePath = $product->getPicture();
         $product->setPicture(
             new File($this->getParameter('pictures_directory') . '/' . $product->getPicture())
         );
@@ -80,6 +83,8 @@ class ProductController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $filePath = $this->getParameter('pictures_directory').'/'.$oldImagePath;
+            if(file_exists($filePath)) unlink($filePath);
             $file = $product->getPicture();
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $file->move(
@@ -96,9 +101,10 @@ class ProductController extends Controller
             return $this->redirectToRoute('catalogue');
         }
 
-        return $this->render('product/productNew.html.twig', array(
+        return $this->render('product/new_product.html.twig', [
             'form' => $form->createView(),
-        ));
+            'title_text' => 'Edit product',
+        ]);
     }
 
     /**
@@ -106,8 +112,8 @@ class ProductController extends Controller
      */
     public function productRemoveAction(Request $request, $sku = null)
     {
-        $entityManager  = $this->getDoctrine()->getManager();
-        $product = $entityManager ->getRepository('AntonShopBundle:Product')->findOneBySku($sku);
+        $entityManager = $this->getDoctrine()->getManager();
+        $product = $entityManager->getRepository('AntonShopBundle:Product')->findOneBySku($sku);
         if (!$product) {
             return $this->redirectToRoute('catalogue');
         }

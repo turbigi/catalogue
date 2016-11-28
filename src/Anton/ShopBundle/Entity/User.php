@@ -2,6 +2,7 @@
 
 namespace Anton\ShopBundle\Entity;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -11,15 +12,18 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
+ * @UniqueEntity("username", message="This username is already used.")
+ * @UniqueEntity("apiKey")
+ * @UniqueEntity("email", message="This email is already used.")
  */
 class User implements AdvancedUserInterface, EquatableInterface, \Serializable
 {
     /**
-     * @ORM\Column(name="id")
+     * @ORM\Column()
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id_user;
+    private $id;
 
     /**
      * @ORM\Column()
@@ -29,16 +33,6 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
      * @Assert\Regex("/^[a-zA-Z0-9_]+$/")
      */
     private $username;
-
-    /**
-     * @ORM\Column(name="apikey")
-     */
-    private $apiKey;
-
-    /**
-     * @ORM\Column(name="last_login", type="datetime")
-     */
-    private $lastLoginTime;
 
     /**
      * @ORM\Column()
@@ -65,6 +59,16 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
     private $email;
 
     /**
+     * @ORM\Column(name="apikey")
+     */
+    private $apiKey;
+
+    /**
+     * @ORM\Column(name="last_login", type="datetime")
+     */
+    private $lastLoginTime;
+
+    /**
      * @ORM\Column(name="is_active")
      */
     private $isActive;
@@ -81,7 +85,7 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
 
     public function getId()
     {
-        return $this->id_user;
+        return $this->id;
     }
 
     public function getUsername()
@@ -190,7 +194,7 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
     public function serialize()
     {
         return serialize(array(
-            $this->id_user,
+            $this->id,
             $this->username,
             $this->password,
             $this->isActive,
@@ -200,7 +204,7 @@ class User implements AdvancedUserInterface, EquatableInterface, \Serializable
     public function unserialize($serialized)
     {
         list (
-            $this->id_user,
+            $this->id,
             $this->username,
             $this->password,
             $this->isActive,

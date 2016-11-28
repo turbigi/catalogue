@@ -1,26 +1,56 @@
-{% extends 'AntonShopBundle::layout.html.twig' %}
-
+{% extends 'default/layout.html.twig' %}
 {% block title %}Login{% endblock %}
 
 {% block sidebar %}
 {% endblock %}
 
+{% block blog_title_text %}
+    Login
+{% endblock %}
+
 {% block body %}
     <header>
-        <h1>Login</h1>
+        <h1>Please Login</h1>
     </header>
+    {% if app.session.flashBag.has('success') %}
+        <div class="alert alert-success">
+            {% for flashMessage in app.session.flashBag.get('success') %}
+                {{ flashMessage }}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-    <form action="{{ path('securityLoginCheck') }}" method="post" class="anton">
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="_username"/>
+    <form name="user" action="{{ path('securityLoginCheck') }}" method="post" class="form-horizontal userLogin">
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error.messageKey|trans(error.messageData, 'security')|replace({"Invalid credentials": "Invalid password"}) }}
+            </div>
+        {% endif %}
+        <hr class="colorgraph">
+        <div id="user">
+            <div class="form-group">
+                <label class="col-sm-2 control-label required" for="username">Username</label>
+                <div class="col-sm-10">
+                    <input type="text" id="username" name="_username" required="required" class="form-control"
+                           autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label required" for="password">Password</label>
+                <div class="col-sm-10">
+                    <input type="password" id="password" name="_password" required="required"
+                           class="form-control" autocomplete="off">
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="_password"/>
+        <hr class="colorgraph">
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <input type="submit" value="Login" class="btn btn-success btn-block btn-lg" tabindex="7"
+                       autocomplete="off">
+            </div>
         </div>
-        <input type="submit" value="Login"/>
     </form>
-    <a href="{{ path('recoveryPassword') }}">Forgot password?</a>
+    <a href="{{ path('recoveryPassword') }}" class="forgot-password">Forgot the password?</a>
 {% endblock %}
 

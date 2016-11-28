@@ -1,0 +1,44 @@
+{% extends 'default/layout.html.twig' %}
+
+{% block stylesheets %}
+    {% stylesheets 'bundles/antonshop/css/*'
+    'bundles/antonshop/css/management/style.css'
+    filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
+
+
+{% block title %}Dashboard{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block blog_title_text %}
+    Dashboard
+{% endblock %}
+
+{% block body %}
+    <div class="dashboard">
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% if table == 'User' %}
+            $(".dashboard").ajaxgrid({
+                dataUrl: '{{ path('ajaxManagement') }}/{{ table }}',
+                sortableColumns: ["id", "username", "password", "email", "apiKey", "lastLoginTime", "isActive", "role"],
+                filterableColumns: ["id", "username", "password", "email", "apiKey", "lastLoginTime", "isActive", "role"],
+                urlAddUser: '{{ path('managementNewUser') }}',
+            });
+            {% else %}
+            $(".dashboard").ajaxgrid({
+                dataUrl: '{{ path('ajaxManagement') }}/{{ table }}',
+                sortableColumns: ["id", "category", "name", "description", "createdAt", "updatedAt", "sku", "isActive", "picture"],
+                filterableColumns: ["id", "category", "name", "description", "createdAt", "updatedAt", "sku", "isActive", "picture"],
+                urlAddUser: '{{ path('newProduct') }}',
+            });
+            {% endif %}
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'default/layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/antonshop/css/product/product.css') }}" type="text/css" rel="stylesheet"/>
+    <link href="{{ asset('bundles/antonshop/css/product/productPage.css') }}" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+{% block blog_title_text %}
+    Product
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
+{% block body %}
+    <div class="product">
+        <header>
+            <hgroup>
+                <h2>{{ product.name }}</h2>
+            </hgroup>
+        </header>
+
+        <figure>
+            <img src="{{ asset('img/products/' ~ product.picture) }}">
+        </figure>
+        <div class="description">
+            <section>
+                <p class="descriptionTitle">Description</p>
+                <p class="description">{{ product.description }}</p>
+                <p><b>Created:</b>
+                    {{ product.createdAt | date('m/d/Y H:i:s') }}
+                </p>
+                <p><b>Updated:</b>
+                    {{ product.updatedAt | date('m/d/Y H:i:s') }}
+                </p>
+                {% if product.relatedProducts|length > 0 %}
+                    <b>Related products:</b>
+                    {% for i in product.relatedProducts %}
+                        <p></p><a href="{{ path('pageProduct', {'sku': i.sku}) }}">{{ i.name }}</a></p>
+                    {% endfor %}
+                {% endif %}
+            </section>
+        </div>
+    </div>
+{% endblock %}

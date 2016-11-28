@@ -5,6 +5,7 @@ namespace Anton\ShopBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="category")
@@ -19,14 +20,13 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column()
      * @Assert\NotBlank()
      * @Assert\Length(min=1)
      * @Assert\Length(max=30)
      * @Assert\Regex("/^[a-zA-Z\s]+$/")
      */
     private $name;
-
 
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
@@ -40,40 +40,26 @@ class Category
     private $children;
 
     /**
-     * @ORM\Column(name="is_active", type="boolean")
+     * @ORM\Column(name="is_active")
      */
     private $isActive;
 
     /**
-     * @ORM\OneToMany(targetEntity="Product", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="Product", mappedBy="category",cascade={"remove"})
      */
     private $products;
-    /**
-     * Constructor
-     */
+
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Category
-     */
     public function setName($name)
     {
         $this->name = $name;
@@ -81,23 +67,11 @@ class Category
         return $this;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     *
-     * @return Category
-     */
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
@@ -105,23 +79,11 @@ class Category
         return $this;
     }
 
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
     public function getIsActive()
     {
         return $this->isActive;
     }
 
-    /**
-     * Set parent
-     *
-     * @param \Anton\ShopBundle\Entity\Category $parent
-     *
-     * @return Category
-     */
     public function setParent(\Anton\ShopBundle\Entity\Category $parent = null)
     {
         $this->parent = $parent;
@@ -129,23 +91,11 @@ class Category
         return $this;
     }
 
-    /**
-     * Get parent
-     *
-     * @return \Anton\ShopBundle\Entity\Category
-     */
     public function getParent()
     {
         return $this->parent;
     }
 
-    /**
-     * Add child
-     *
-     * @param \Anton\ShopBundle\Entity\Category $child
-     *
-     * @return Category
-     */
     public function addChild(\Anton\ShopBundle\Entity\Category $child)
     {
         $this->children[] = $child;
@@ -153,33 +103,16 @@ class Category
         return $this;
     }
 
-    /**
-     * Remove child
-     *
-     * @param \Anton\ShopBundle\Entity\Category $child
-     */
     public function removeChild(\Anton\ShopBundle\Entity\Category $child)
     {
         $this->children->removeElement($child);
     }
 
-    /**
-     * Get children
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
     public function getChildren()
     {
         return $this->children;
     }
 
-    /**
-     * Add product
-     *
-     * @param \Anton\ShopBundle\Entity\Product $product
-     *
-     * @return Category
-     */
     public function addProduct(\Anton\ShopBundle\Entity\Product $product)
     {
         $this->products[] = $product;
@@ -187,21 +120,11 @@ class Category
         return $this;
     }
 
-    /**
-     * Remove product
-     *
-     * @param \Anton\ShopBundle\Entity\Product $product
-     */
     public function removeProduct(\Anton\ShopBundle\Entity\Product $product)
     {
         $this->products->removeElement($product);
     }
 
-    /**
-     * Get products
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
     public function getProducts()
     {
         return $this->products;

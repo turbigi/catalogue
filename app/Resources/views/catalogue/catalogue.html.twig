@@ -1,0 +1,122 @@
+{% macro menu_links(links) %}
+    {% import _self as macros %}
+    {% for link in links %}
+        {% if link.children|length >= 1 %}
+            <li class="Collapsable parent">
+            {% if is_granted('ROLE_MODERATOR') %}
+                <a class="editCategory" href="{{ path('categoryEdit',{'id': link.id}) }}">
+                    <img src="{{ asset('bundles/antonshop/img/edit.jpg') }}" class="editimg"/>
+                </a>
+                <a class="removeCategory" href="{{ path('categoryRemove',{'id': link.id}) }}"
+                   onClick="return confirm('Are you sure you want to delete?')">
+                    <img src="{{ asset('bundles/antonshop/img/delete.jpg') }}" class="delimg"/>
+                </a>
+                <a class="addCategory" href="{{ path('categoryAdd',{'id': link.id}) }}">
+                    <img src="{{ asset('bundles/antonshop/img/add.jpg') }}" class="addimg"/>
+                </a>
+            {% endif %}
+        {% else %}
+            <li class="Collapsable lastChild">
+            {% if is_granted('ROLE_MODERATOR') %}
+                <a class="editCategory" href="{{ path('categoryEdit',{'id': link.id}) }}">
+                    <img src="{{ asset('bundles/antonshop/img/edit.jpg') }}" class="editimg"/>
+                </a>
+                <a class="removeCategory" href="{{ path('categoryRemove',{'id': link.id}) }}"
+                   onClick="return confirm('Are you sure you want to delete?')">
+                    <img src="{{ asset('bundles/antonshop/img/delete.jpg') }}" class="delimg"/>
+                </a>
+                <a class="addCategory" href="{{ path('categoryAdd',{'id': link.id}) }}">
+                    <img src="{{ asset('bundles/antonshop/img/add.jpg') }}" class="addimg"/>
+                </a>
+            {% endif %}
+        {% endif %}
+        <a href="{{ path('category',{'id':link.id }) }}" class="categoryName">{{ link.name }}</a>
+        {% if link.children|length >= 1 %}
+            <ul>
+                {{ macros.menu_links(link.children) }}
+            </ul>
+        {% endif %}
+        </li>
+    {% endfor %}
+{% endmacro %}
+
+{% import _self as macros %}
+
+{% extends 'default/layout.html.twig' %}
+
+{% block title %}
+    Catalogue
+{% endblock %}
+
+{% block blog_title_text %}
+    Catalogue
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets 'bundles/antonshop/css/*'
+    'bundles/antonshop/css/product/product.css'
+    filter='cssrewrite' %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
+
+{% block sidebarText %}
+    {% if is_granted('ROLE_MODERATOR') %}
+        <a class="addCategory" href="{{ path('categoryAdd',{'id':'root'}) }}">
+            <img src="{{ asset('bundles/antonshop/img/add.jpg') }}" class="addimgroot"/>
+        </a>
+    {% endif %}
+    <ul id="list">
+        {{ macros.menu_links(categories) }}
+    </ul>
+{% endblock %}
+
+
+{% block body %}
+    {% if pagination|length > 0 %}
+        {% for article in pagination %}
+            <div class="product">
+                <header>
+                    <hgroup>
+                        <h2><a href="{{ path('pageProduct',{'sku':article.sku}) }}">{{ article.name }}</a></h2>
+                    </hgroup>
+                </header>
+
+                <figure>
+                    <img src="{{ asset('img/products/' ~ article.picture) }}">
+                </figure>
+                <div class="description">
+                    {% if is_granted('ROLE_MODERATOR') %}
+                        <a class="editCategory" href="{{ path('editProduct',{'sku': article.sku}) }}">
+                            <img src="{{ asset('bundles/antonshop/img/edit.jpg') }}" class="editimg"/>
+                        </a>
+                        <a class="removeCategory" href="{{ path('removeProduct',{'sku': article.sku}) }}"
+                           onClick="return confirm('Are you sure you want to delete?')">
+                            <img src="{{ asset('bundles/antonshop/img/delete.jpg') }}" class="delimg"/>
+                        </a>
+                    {% endif %}
+                    <section>
+                        <p class="descriptionTitle">Description</p>
+                        <p class="description">{{ article.description }}</p>
+                        <p><b>Created:</b> {{ article.createdAt | date('m/d/Y H:i:s') }}</p>
+                        <p><b>Updated:</b> {{ article.updatedAt | date('m/d/Y H:i:s') }}</p>
+                    </section>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+    {% if is_granted('ROLE_MODERATOR') %}
+        {% if categoryId %}
+            <div class="row">
+                <div class="pull-right">
+                    <a href="{{ path('newProduct', {'categoryId': categoryId }) }}">
+                        <input type="submit" value="Add product" class="btn btn-success btn-block btn-lg">
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

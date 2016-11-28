@@ -3,6 +3,7 @@
 namespace Anton\ShopBundle\Form;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,27 +18,38 @@ class ProductType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('description', TextType::class)
-            ->add('isActive', ChoiceType::class, array(
-                'choices' => [
-                    'Yes' => true,
-                    'No' => false,
-                ],
-            ))
-            ->add('category', EntityType::class, array(
+            ->add('description', TextareaType::class)
+            ->add('category', EntityType::class, [
                 'class' => 'Anton\ShopBundle\Entity\Category',
                 'choice_label' => 'name',
                 'empty_data' => null,
                 'placeholder' => '----Choose parent----',
-            ))
-            ->add('picture', FileType::class, array('label' => 'Picture'));
+            ])
+            ->add('isActive', ChoiceType::class, [
+                'choices' => [
+                    'Yes' => 1,
+                    'No' => 0,
+                ],
+                'label' => 'Active?',
+            ])
+            ->add('relatedProducts', EntityType::class, [
+                'class' => 'Anton\ShopBundle\Entity\Product',
+                'choice_label' => 'name',
+                'empty_data' => null,
+                'expanded' => true ,
+                'multiple' => true ,
+                'placeholder' => '----Choose related product----',
+            ])
+            ->add('picture', FileType::class, [
+                'label' => 'Picture',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Anton\ShopBundle\Entity\Product',
-        ));
+        ]);
     }
 
     public function getName()

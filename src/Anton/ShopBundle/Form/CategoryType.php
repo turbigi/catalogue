@@ -18,20 +18,21 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('isActive', ChoiceType::class, array(
+            ->add('isActive', ChoiceType::class, [
                 'choices' => [
                     'Yes' => true,
                     'No' => false,
                 ],
-            ))
-            ->add('parent', EntityType::class, array(
+                'label' => 'Active?',
+            ])
+            ->add('parent', EntityType::class, [
                 'class' => 'Anton\ShopBundle\Entity\Category',
                 'choices' => $options['parents'],
                 'choice_label' => 'name',
                 'empty_data' => null,
                 'placeholder' => 'root',
                 'required' => false,
-            ));
+            ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $parents = $event->getData();
@@ -46,10 +47,10 @@ class CategoryType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Anton\ShopBundle\Entity\Category',
             'parents' => [],
-        ));
+        ]);
     }
 
     public function getName()

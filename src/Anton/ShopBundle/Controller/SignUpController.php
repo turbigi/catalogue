@@ -34,14 +34,15 @@ class SignUpController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-            $guardHandler = $this->container->get('security.authentication.guard_handler');
-            $guardHandler->authenticateUserAndHandleSuccess($user, $request, $this->get('app.form_login_authenticator'), 'main');
-
-            return $this->redirectToRoute('homepage');
+            $this->addFlash('success', 'You have successfully registered!');
+            return $this->redirectToRoute('securityLogin');
         }
         return $this->render(
-            'AntonShopBundle:Page:signup.html.twig',
-            array('form' => $form->createView())
+            'signup/signup.html.twig', [
+                'form' => $form->createView(),
+                'title_text' => 'Registration',
+                'header_text' => 'Please Sign Up',
+            ]
         );
     }
 }

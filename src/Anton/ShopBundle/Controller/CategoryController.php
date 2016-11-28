@@ -29,7 +29,6 @@ class CategoryController extends Controller
                 return $objA->getId() - $objB->getId();
             }
         );
-
         $category = $entityManager->getRepository('AntonShopBundle:Category')->findOneById($id);
         $form = $this->createForm(CategoryType::class, $category, ['parents' => $arrayWithoutChilds]);
         $form->handleRequest($request);
@@ -42,8 +41,9 @@ class CategoryController extends Controller
         }
 
         return $this->render(
-            'AntonShopBundle:Page:categoryEdit.html.twig',
-            array('form' => $form->createView())
+            'category/edit_category.html.twig', [
+                'form' => $form->createView(),
+            ]
         );
     }
 
@@ -74,15 +74,15 @@ class CategoryController extends Controller
             return $this->redirectToRoute('catalogue');
         }
         return $this->render(
-            'AntonShopBundle:Page:categoryEdit.html.twig',
-            array('form' => $form->createView())
+            'category/edit_category.html.twig', [
+                'form' => $form->createView(),
+            ]
         );
     }
 
     /**
      * @Route("/category/{id}/remove", name="categoryRemove")
      */
-
     public function categoryRemoveAction(Request $request, $id = null)
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -106,5 +106,4 @@ class CategoryController extends Controller
         }
         return $childs;
     }
-
 }

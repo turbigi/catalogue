@@ -28,7 +28,8 @@ security:
                 path:   /logout
                 target: /
     access_control:
-             - { path: ^/admin, roles: ROLE_ADMIN }
+             - { path: ^/management/products, roles: ROLE_MODERATOR }
+             - { path: ^/management/users, roles: ROLE_ADMIN }
              - { path: ^/category/, roles: ROLE_MODERATOR }
              - { path: ^/product/page, roles: ROLE_USER }
              - { path: ^/product, roles: ROLE_MODERATOR }

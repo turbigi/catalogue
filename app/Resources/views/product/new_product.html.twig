@@ -1,0 +1,23 @@
+{% extends 'default/layout.html.twig' %}
+
+{% block title %}Edit/Add product{% endblock %}
+
+{% block blog_title_text %}
+    {{ title_text }}
+{% endblock %}
+
+{% block body %}
+    <header>
+    </header>
+    {{ form_start(form) }}
+    <hr class="colorgraph">
+    {{ form_widget(form) }}
+    <hr class="colorgraph">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <input type="submit" value="Confirm" class="btn btn-success btn-block btn-lg" tabindex="7"
+                   autocomplete="off">
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

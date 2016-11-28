@@ -13,17 +13,25 @@ class Builder implements ContainerAwareInterface
     {
         $menu = $factory->createItem('root');
 
-        $menu->setChildrenAttributes(array('class' => 'nav nav-pills'));
+        $menu->setChildrenAttributes(['class' => 'nav nav-pills']);
         $name = $options['username'];
-        $menu->addChild($name, array('route' => 'homepage', 'attributes' => array('class' =>
-            'dropdown pull-right btnn', 'caret' => 'lol')));
-        $menu[$name]->setLinkAttributes(array('class' => 'dropdown-toggle', 'data-toggle' => 'dropdown'));
-        $menu[$name]->setChildrenAttributes(array('class' => 'dropdown-menu'));
+        $menu->addChild($name, ['route' => 'homepage', 'attributes' => ['class' =>
+            'dropdown pull-right', 'caret' => 'userCaret']]);
+        $menu[$name]->setLinkAttributes(['class' => 'dropdown-toggle', 'data-toggle' => 'dropdown']);
+        $menu[$name]->setChildrenAttributes(['class' => 'dropdown-menu']);
+        if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $menu[$name]->addChild('Users', ['route' => 'usersManagement']);
+            $menu[$name]->addChild('Products', ['route' => 'productsManagement']);
+            $menu[$name]->addChild(NULL, ['attributes' => ['class' => 'divider']]);
+        } elseif ($this->container->get('security.authorization_checker')->isGranted('ROLE_MODERATOR')) {
+            $menu[$name]->addChild('Products', ['route' => 'productsManagement']);
+            $menu[$name]->addChild(NULL, ['attributes' => ['class' => 'divider']]);
+        }
 
-        $menu[$name]->addChild('Dashboard', array('route' => 'homepage'));
-        $menu[$name]->addChild(NULL, array('attributes' => array('class' => 'divider')));
-        $menu[$name]->addChild('Exit', array('route' => 'logout'));
+        $menu[$name]->addChild('Logout', ['route' => 'logout']);
 
+        $menu->addChild('Catalogue', ['route' => 'catalogue', 'attributes' => ['class' =>
+            'pull-left']]);
         return $menu;
     }
 }

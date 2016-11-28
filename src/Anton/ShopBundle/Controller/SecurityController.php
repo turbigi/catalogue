@@ -18,7 +18,10 @@ class SecurityController extends Controller
         if (true === $this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
             return $this->redirectToRoute('homepage');
         }
-        return $this->render('security/login.html.twig');
+        $helper = $this->get('security.authentication_utils');
+        return $this->render('security/login.html.twig', [
+            'error' => $helper->getLastAuthenticationError(),
+        ]);
     }
 
     /**
@@ -51,12 +54,14 @@ class SecurityController extends Controller
                 $user->setApiKey(base64_encode(md5($user->getPlainPassword() . $username)));
                 $entityManager->persist($user);
                 $entityManager->flush();
-                return $this->redirectToRoute('homepage');
+                $this->addFlash('success', 'Your password has been changed successfully');
+                return $this->redirectToRoute('securityLogin');
             }
             return $this->render(
-                'security/recoveryPassConfirm.html.twig',
-                array('form' => $form->createView(), 'apiKey' => $apiKey)
-            );
+                'security/recovery_pass_confirm.html.twig', [
+                'form' => $form->createView(),
+                'apiKey' => $apiKey,
+            ]);
         }
 
     }
@@ -71,16 +76,18 @@ class SecurityController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $user = $entityManager->getRepository('AntonShopBundle:User')->findOneByEmail($email);
             if (!$user) {
-                return $this->redirectToRoute('homepage');
+                $this->addFlash('error', 'Email not found.');
+                return $this->redirectToRoute('recoveryPassword');
             }
             $message = \Swift_Message::newInstance()
                 ->setSubject('Recovery password')
                 ->setFrom('zerg7007@gmail.com')
                 ->setTo($user->getEmail())
-                ->setBody($this->renderView('AntonShopBundle:Page:contactEmail.html.twig', array('enquiry' => $user)), 'text/html');
+                ->setBody($this->renderView('mail/mailer.html.twig', ['enquiry' => $user]), 'text/html');
             $this->get('mailer')->send($message);
-            return $this->render('security/recovery.html.twig');
+            $this->addFlash('success', 'Message has been sent successfully.');
+            return $this->render('security/recovery_password.html.twig');
         }
-        return $this->render('security/recovery.html.twig');
+        return $this->render('security/recovery_password.html.twig');
     }
 }

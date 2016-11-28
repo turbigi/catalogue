@@ -2,12 +2,14 @@
 
 namespace Anton\ShopBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="product")
+ * @UniqueEntity("sku")
  */
 class Product
 {
@@ -19,53 +21,64 @@ class Product
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=64)
-     * @Assert\NotBlank()
-     * @Assert\Length(min=1)
-     * @Assert\Length(max=30)
-     * @Assert\Regex("/^[a-zA-Z\s]+$/")
-     */
-    private $name;
-    /**
-     * @ORM\Column(type="string", length=100)
-     * @Assert\NotBlank()
-     * @Assert\Length(min=1)
-     * @Assert\Length(max=100)
-     */
-    private $description;
-    /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     */
-    private $createdAt;
-    /**
-     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
-     */
-    private $updatedAt;
-    /**
-     * @ORM\Column(name="is_active", type="boolean")
-     */
-    private $isActive;
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
-    private $sku;
-    /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     private $category;
 
     /**
-     * @ORM\Column(type="string")
-     *
+     * @ORM\Column()
+     * @Assert\NotBlank()
+     * @Assert\Length(min=1)
+     * @Assert\Length(max=30)
+     * @Assert\Regex("/^[a-zA-Z\s]+$/")
+     */
+    private $name;
+
+    /**
+     * @ORM\Column()
+     * @Assert\NotBlank()
+     * @Assert\Length(min=1)
+     * @Assert\Length(max=100)
+     */
+    private $description;
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(name="updated_at", type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\Column()
+     */
+    private $sku;
+
+    /**
+     * @ORM\Column(name="is_active")
+     */
+    private $isActive;
+
+    /**
+     * @ORM\Column()
      * @Assert\NotBlank(message="Please, upload the product picture as a JPEG file.")
-     * @Assert\File(mimeTypes={ "image/jpeg" },mimeTypesMessage = "Please upload a valid image")
+     * @Assert\File(mimeTypes={ "image/jpeg" }, mimeTypesMessage = "Please upload a valid image!")
+     * @Assert\Image(
+     *     maxWidth = 600,
+     *     maxHeight = 600
+     * )
      */
     private $picture;
+
     /**
      * @ORM\ManyToMany(targetEntity="Product", mappedBy="relatedProducts")
      */
     private $relatedProductsWithThis;
+
     /**
      * @ORM\ManyToMany(targetEntity="Product", inversedBy="relatedProductsWithThis")
      * @ORM\JoinTable(name="related_products",
@@ -87,24 +100,11 @@ class Product
         return $this;
     }
 
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Product
-     */
     public function setName($name)
     {
         $this->name = $name;
@@ -112,23 +112,11 @@ class Product
         return $this;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Product
-     */
     public function setDescription($description)
     {
         $this->description = $description;
@@ -136,23 +124,11 @@ class Product
         return $this;
     }
 
-    /**
-     * Get description
-     *
-     * @return string
-     */
     public function getDescription()
     {
         return $this->description;
     }
 
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Product
-     */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
@@ -160,23 +136,11 @@ class Product
         return $this;
     }
 
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return Product
-     */
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
@@ -184,23 +148,11 @@ class Product
         return $this;
     }
 
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
     public function getUpdatedAt()
     {
         return $this->updatedAt;
     }
 
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     *
-     * @return Product
-     */
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
@@ -208,23 +160,11 @@ class Product
         return $this;
     }
 
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
     public function getIsActive()
     {
         return $this->isActive;
     }
 
-    /**
-     * Set sku
-     *
-     * @param integer $sku
-     *
-     * @return Product
-     */
     public function setSku($sku)
     {
         $this->sku = $sku;
@@ -232,111 +172,58 @@ class Product
         return $this;
     }
 
-    /**
-     * Get sku
-     *
-     * @return integer
-     */
     public function getSku()
     {
         return $this->sku;
     }
 
-    /**
-     * Set category
-     *
-     * @param \Anton\ShopBundle\Entity\Category $category
-     *
-     * @return Product
-     */
-    public function setCategory(\Anton\ShopBundle\Entity\Category $category = null)
+    public function setCategory(Category $category = null)
     {
         $this->category = $category;
 
         return $this;
     }
 
-    /**
-     * Get category
-     *
-     * @return \Anton\ShopBundle\Entity\Category
-     */
     public function getCategory()
     {
         return $this->category;
     }
-    /**
-     * Constructor
-     */
+
     public function __construct()
     {
         $this->relatedProductsWithThis = new \Doctrine\Common\Collections\ArrayCollection();
         $this->relatedProducts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    /**
-     * Add relatedProductsWithThi
-     *
-     * @param \Anton\ShopBundle\Entity\Product $relatedProductsWithThi
-     *
-     * @return Product
-     */
-    public function addRelatedProductsWithThi(\Anton\ShopBundle\Entity\Product $relatedProductsWithThi)
+    public function addRelatedProductsWithThi(Product $relatedProductsWithThi)
     {
         $this->relatedProductsWithThis[] = $relatedProductsWithThi;
 
         return $this;
     }
 
-    /**
-     * Remove relatedProductsWithThi
-     *
-     * @param \Anton\ShopBundle\Entity\Product $relatedProductsWithThi
-     */
-    public function removeRelatedProductsWithThi(\Anton\ShopBundle\Entity\Product $relatedProductsWithThi)
+    public function removeRelatedProductsWithThi(Product $relatedProductsWithThi)
     {
         $this->relatedProductsWithThis->removeElement($relatedProductsWithThi);
     }
 
-    /**
-     * Get relatedProductsWithThis
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
     public function getRelatedProductsWithThis()
     {
         return $this->relatedProductsWithThis;
     }
 
-    /**
-     * Add relatedProduct
-     *
-     * @param \Anton\ShopBundle\Entity\Product $relatedProduct
-     *
-     * @return Product
-     */
-    public function addRelatedProduct(\Anton\ShopBundle\Entity\Product $relatedProduct)
+    public function addRelatedProduct(Product $relatedProduct)
     {
         $this->relatedProducts[] = $relatedProduct;
 
         return $this;
     }
 
-    /**
-     * Remove relatedProduct
-     *
-     * @param \Anton\ShopBundle\Entity\Product $relatedProduct
-     */
-    public function removeRelatedProduct(\Anton\ShopBundle\Entity\Product $relatedProduct)
+    public function removeRelatedProduct(Product $relatedProduct)
     {
         $this->relatedProducts->removeElement($relatedProduct);
     }
 
-    /**
-     * Get relatedProducts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
     public function getRelatedProducts()
     {
         return $this->relatedProducts;

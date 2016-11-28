@@ -52,7 +52,7 @@ class FormLoginAuthenticator extends AbstractFormLoginAuthenticator
             return true;
         }
 
-        throw new BadCredentialsException();
+        throw new BadCredentialsException('Username "%s" does not exist');
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)

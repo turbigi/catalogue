@@ -27,13 +27,15 @@ framework:
         # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
         handler_id:  session.handler.native_file
         save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
-        cookie_lifetime: 1800
+        cookie_lifetime: 3600
     fragments:       ~
     http_method_override: true
     assets: ~
 
 # Twig Configuration
 twig:
+    form_themes:
+        - 'bootstrap_3_horizontal_layout.html.twig'
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
 
@@ -66,9 +68,17 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+knp_paginator:
+    template:
+        pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig
 knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer
     twig:
         template: KnpMenuBundle::menu.html.twig
     #  if true, enables the helper for PHP templates
     templating: false
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: true
+    filters:
+        cssrewrite: ~

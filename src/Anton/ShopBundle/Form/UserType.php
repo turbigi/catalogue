@@ -18,21 +18,21 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class)
             ->add('username', TextType::class)
-            ->add('plainPassword', RepeatedType::class, array(
-                    'type' => PasswordType::class,
-                    'first_options' => array('label' => 'Password'),
-                    'second_options' => array('label' => 'Repeat Password'),
-                )
-            )
-            ->add('role', ChoiceType::class, array(
+            ->add('email', EmailType::class)
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options' => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat Password'],
+                'invalid_message' => 'The password fields must match.',
+            ])
+            ->add('role', ChoiceType::class, [
                 'choices' => [
                     'ROLE_USER' => 'ROLE_USER',
                     'ROLE_MODERATOR' => 'ROLE_MODERATOR',
                     'ROLE_ADMIN' => 'ROLE_ADMIN',
                 ],
-            ));
+            ]);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
 
             $form = $event->getForm();
@@ -45,9 +45,9 @@ class UserType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => 'Anton\ShopBundle\Entity\User',
             'role' => [],
-        ));
+        ]);
     }
 }

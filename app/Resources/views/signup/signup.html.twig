@@ -1,0 +1,26 @@
+{% extends 'default/layout.html.twig' %}
+{% block title %}New user{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block blog_title_text %}
+    {{ title_text }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>{{ header_text }}</h1>
+    </header>
+    {{ form_start(form) }}
+    <hr class="colorgraph">
+    {{ form_widget(form) }}
+    <hr class="colorgraph">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <input type="submit" value="Submit" class="btn btn-success btn-block btn-lg"
+                   tabindex="7">
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'default/layout.html.twig' %}
+
+{% block title %}
+    Edit category
+{% endblock %}
+{% block blog_title_text %}
+    {% if form.parent %}
+        Edit category
+    {% else %}
+        Add category
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <header>
+    </header>
+    {{ form_start(form) }}
+    <hr class="colorgraph">
+    {{ form_widget(form) }}
+    <hr class="colorgraph">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <input type="submit" value="Submit" class="btn btn-success btn-block btn-lg" tabindex="7"
+                   autocomplete="off">
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'default/layout.html.twig' %}
+{% block title %}
+    Recovery password
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block blog_title_text %}
+    Recovery password
+{% endblock %}
+
+{% block body %}
+    <header>
+        <p class="text-left">Enter your new password.</p>
+    </header>
+    {{ form_start(form, { 'apikey':apiKey }) }}
+    <hr class="colorgraph">
+    {{ form_widget(form) }}
+    <hr class="colorgraph">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <input type="submit" value="Confirm" class="btn btn-success btn-block btn-lg" tabindex="7"
+                   autocomplete="off">
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

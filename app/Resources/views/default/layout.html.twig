@@ -1,0 +1,24 @@
+{% extends 'default/base.html.twig' %}
+
+{% block sidebarText %}
+{% endblock %}
+
+{% block navigation %}
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        {% set menuItem = knp_menu_get('AntonShopBundle:Builder:mainMenu',[], {'username': app.user.username, 'catalogue': null }) %}
+        {{ knp_menu_render(menuItem) }}
+    {% else %}
+        <ul class="nav nav-pills">
+            <li class="pull-right">
+                <a href="{{ path('securityLogin') }}">
+                    Login
+                </a>
+            </li>
+            <li class="pull-right">
+                <a href="{{ path('signUp') }}">
+                    Sign up
+                </a>
+            </li>
+        </ul>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,96 @@
+.product h2 {
+    font-family: Helvetica Neue, Arial, sans-serif;
+    font-weight: normal;
+    margin-top: 20px;
+}
+
+.product h2 {
+    font-size: 20pt;
+    line-height: 1em;
+    color: black;
+    text-align: left;
+}
+
+.product p {
+    margin-bottom: 5px;
+}
+
+header {
+    margin-bottom: 20px;
+}
+
+figure {
+    display: block;
+    float: left;
+}
+
+figure img {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+.product section {
+    font-family: Tahoma, Arial, sans-serif;
+    line-height: 100%;
+    width: 200px;
+    color: #333;
+}
+
+div.description {
+    position: relative;
+    margin: 0px;
+    margin-left: 10px;
+    padding: 0px;
+    display: inline-block;
+}
+
+.main-col {
+    width: 50%;
+    margin-right: 25%;
+}
+
+p.descriptionTitle:before {
+    margin-bottom: 10px;
+    content: url('../..//img/info.png');
+    padding-right: 5px;
+}
+
+p.descriptionTitle {
+    margin-bottom: 10px;
+    color: #0b5ba9;
+    font-weight: bold;
+}
+
+p.description {
+    word-wrap: break-word;
+    margin-bottom: 20px;
+}
+
+b {
+    font-weight: bold;
+}
+
+.product {
+    padding-bottom: 10px;
+    overflow: auto;
+    margin-left: 30px;
+    border-bottom: 1px solid black;
+}
+
+.navigation {
+    display: inline;
+}
+
+.btn {
+    margin-top: 20px;
+}
+
+.description .editimg {
+    position: absolute;
+    right: 0;
+}
+
+.description .delimg {
+    position: absolute;
+    right: 14px;
+}
